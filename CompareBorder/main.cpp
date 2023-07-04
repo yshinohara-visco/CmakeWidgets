@@ -12,7 +12,7 @@ public:
 		auto txt = new wxStaticText( this, wxID_ANY, string );
 		auto sizer = new wxBoxSizer( wxVERTICAL );
 		{
-			sizer->Add( txt );
+			sizer->Add( txt, 0, wxALL, 10 );
 		}
 		SetSizer( sizer );
 	}
@@ -51,6 +51,21 @@ public:
 			sizer->AddStretchSpacer();
 		}
 		SetSizer( sizer );
+
+		txt7->Bind( wxEVT_PAINT, [&, txt7]( wxPaintEvent& event )
+			{
+				wxPaintDC dc( txt7 );
+				dc.Clear();
+				dc.SetPen( *wxRED );
+				if (txt7->IsEnabled())
+				{
+					dc.DrawRectangle( wxPoint(0,0), txt7->GetClientSize() );
+				}
+				else
+				{
+					dc.DrawCircle( wxPoint(5,5), 5 );
+				}
+			} );
 
 		Bind( wxEVT_BUTTON, [&, txt, txt2, txt3, txt4, txt5, txt6, txt7]( wxCommandEvent& event )
 			{
