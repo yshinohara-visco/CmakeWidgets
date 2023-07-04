@@ -5,6 +5,7 @@
 #include <wx/wrapsizer.h>
 #include <wx/dcgraph.h>
 #include <wx/dcbuffer.h>
+#include <wx/generic/stattextg.h>
 #include <memory>
 
 /*
@@ -120,6 +121,101 @@ public:
 	}
 };
 
+class CtrlTest2 : public wxPanel
+{
+public:
+	CtrlTest2( wxWindow* parent )
+	{
+		SetBackgroundStyle( wxBG_STYLE_PAINT );
+		Create( parent, wxID_ANY, wxDefaultPosition, wxSize( 100, 100 ) );
+
+		auto lbl = new wxStaticText( this, wxID_ANY, "textttttttt" );
+		bool hoge = HasTransparentBackground();
+		bool hoge2 = lbl->HasTransparentBackground();
+		std::cout << "hoge=" << hoge << " hoge2=" << hoge2 << std::endl;
+
+		auto sizer = new wxBoxSizer( wxVERTICAL );
+		{
+			sizer->AddStretchSpacer();
+			sizer->Add( lbl, 0, wxALIGN_CENTER );
+			sizer->AddStretchSpacer();
+		}
+		SetSizer( sizer );
+
+		Bind( wxEVT_PAINT, [&]( wxPaintEvent& event )
+			{
+				wxPaintDC dc( this );
+
+				dc.SetPen( *wxRED );
+				dc.SetBrush( *wxTRANSPARENT_BRUSH );
+
+				dc.DrawRoundedRectangle( GetClientRect(), 20 );
+				dc.DrawLine( wxPoint( 0, 0 ), wxPoint( 100, 100 ) );
+			} );
+	}
+};
+
+class myStaticText : public wxStaticText
+{
+public:
+	myStaticText( wxWindow* parent, wxWindowID id, const wxString& label )
+		:wxStaticText()
+	{
+		SetBackgroundStyle( wxBG_STYLE_PAINT );
+		Create( parent, id, label );
+	}
+};
+
+class myStaticTextg : public wxGenericStaticText
+{
+public:
+	myStaticTextg( wxWindow* parent, wxWindowID id, const wxString& label )
+		:wxGenericStaticText()
+	{
+		SetBackgroundStyle( wxBG_STYLE_PAINT );
+		Create( parent, id, label );
+	}
+};
+
+class CtrlTest3 : public wxPanel
+{
+public:
+	CtrlTest3( wxWindow* parent )
+	{
+		SetBackgroundStyle( wxBG_STYLE_PAINT );
+		Create( parent, wxID_ANY, wxDefaultPosition, wxSize( 100, 100 ) );
+
+		auto lbl = new myStaticText( this, wxID_ANY, "textttttttt" );
+		auto lblg = new myStaticTextg( this, wxID_ANY, "texttttttttgg" );
+
+		auto sizer = new wxBoxSizer( wxVERTICAL );
+		{
+			sizer->AddStretchSpacer();
+			sizer->Add( lbl, 0, wxALIGN_CENTER );
+			sizer->Add( lblg, 0, wxALIGN_CENTER );
+			sizer->AddStretchSpacer();
+		}
+		SetSizer( sizer );
+
+		Bind( wxEVT_LEFT_DOWN, [&, lbl, lblg]( wxMouseEvent& event )
+			{
+				static bool enable = false;
+				lbl->Enable( enable );
+				lblg->Enable( enable );
+				enable = !enable;
+			} );
+		Bind( wxEVT_PAINT, [&]( wxPaintEvent& event )
+			{
+				wxPaintDC dc( this );
+
+				dc.SetPen( *wxRED );
+				dc.SetBrush( *wxTRANSPARENT_BRUSH );
+
+				dc.DrawRoundedRectangle( GetClientRect(), 20 );
+				dc.DrawLine( wxPoint( 0, 0 ), wxPoint( 100, 100 ) );
+			} );
+	}
+};
 
 class PanelBack : public wxPanel
 {
@@ -144,6 +240,8 @@ public:
 		add( new CtrlBufferedPaintDC( this, true ) );
 		add( new CtrlAutoBufferedPaintDC( this, true ) );
 		add( new CtrlTest( this ) );
+		add( new CtrlTest2( this ) );
+		add( new CtrlTest3( this ) );
 
 
 		Bind( wxEVT_PAINT, &PanelBack::OnPaint, this );

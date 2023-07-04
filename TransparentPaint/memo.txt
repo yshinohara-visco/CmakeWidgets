@@ -1,0 +1,8 @@
+﻿親の透過周りの検証
+
+LinuxではwxStaticText等が親を透過するのに大してWindowsではしない
+wxCLIP_CHILDRENを解除してもされないままだった
+HasTransparentBackground()がtrueを返す割には透過しない
+
+wxGenericStaticTextをSetBackgroudStyle(wxBG_STYLE_PAINT)で初期化すれば透過した
+しかし、SetLabel()の後にRefresh()しないと前回の描画が残るようになった。
