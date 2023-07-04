@@ -1,0 +1,8 @@
+﻿ボーダーの種類ごとの見た目の確認
+
+wxBORDER_DOUBLEとwxBORDER_THEMEは同一。
+Windowsの場合これらはEnableに応じて枠が変わるが、親へのRefresh()をしないと枠が更新されない。
+やめてほしい。
+
+WindowsではwxStaticTextのstyleにボーダーを設定しても反映されたが、Linuxでは枠が付かなかった。
+パネルでないと効かない？
