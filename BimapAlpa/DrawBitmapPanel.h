@@ -4,6 +4,8 @@
 #endif
 #include <wx/rawbmp.h>
 #include <wx/dcbuffer.h>
+#include <wx/dcgraph.h>
+#include <memory>
 
 namespace
 {
@@ -28,18 +30,24 @@ namespace
 		return bmp;
 	}
 
+	auto bmp1 = MakeBitmap( 255, 50, 50, 20 );
+	auto bmp2 = MakeBitmap( 50, 255, 50, 20 );
+	auto bmp3 = MakeBitmap( 50, 50, 255, 20 );
+
 	void DrawBitmaps( wxDC& dc )
 	{
 		dc.Clear();
 
-		auto bmp1 = MakeBitmap( 255, 50, 50, 20 );
 		dc.DrawBitmap( bmp1, wxPoint( 25, 0 ) );
-
-		auto bmp2 = MakeBitmap( 50, 255, 50, 20 );
 		dc.DrawBitmap( bmp2, wxPoint( 0, 50 ) );
-
-		auto bmp3 = MakeBitmap( 50, 50, 255, 20 );
 		dc.DrawBitmap( bmp3, wxPoint( 50, 50 ) );
+	}
+
+	void DrawBitmaps( std::unique_ptr<wxGraphicsContext>& gc )
+	{
+		gc->DrawBitmap( bmp1, 25, 0, 100, 100 );
+		gc->DrawBitmap( bmp2, 0, 50, 100, 100 );
+		gc->DrawBitmap( bmp3, 50, 50, 100, 100 );
 	}
 }
 
@@ -78,6 +86,64 @@ public:
 				//wxBufferedDC dc( &pdc );
 				//wxBufferedPaintDC dc( this );
 				DrawBitmaps( dc );
+			} );
+	}
+};
+
+class DrawBitmapPanel3 : public wxPanel
+{
+public:
+	DrawBitmapPanel3( wxWindow* parent )
+		:wxPanel( parent, wxID_ANY )
+	{
+		SetBackgroundColour( wxColor( 150, 150, 150 ) );
+
+		Bind( wxEVT_PAINT, [&]( wxPaintEvent& event )
+			{
+				wxPaintDC dc( this );
+				wxGCDC gdc( dc );
+				DrawBitmaps( gdc );
+			} );
+	}
+};
+
+class DrawBitmapPanel4 : public wxPanel
+{
+public:
+	DrawBitmapPanel4( wxWindow* parent )
+		:wxPanel( parent, wxID_ANY )
+	{
+		SetBackgroundColour( wxColor( 150, 150, 150 ) );
+
+		Bind( wxEVT_PAINT, [&]( wxPaintEvent& event )
+			{
+				wxPaintDC dc( this );
+				std::unique_ptr<wxGraphicsContext> gc( wxGraphicsContext::Create( dc ) );
+
+				dc.Clear();
+				DrawBitmaps( gc );
+			} );
+	}
+};
+
+class DrawBitmapPanel5 : public wxPanel
+{
+public:
+	DrawBitmapPanel5( wxWindow* parent )
+		:wxPanel()
+	{
+		SetBackgroundStyle( wxBG_STYLE_PAINT );
+		Create( parent, wxID_ANY );
+
+		SetBackgroundColour( wxColor( 150, 150, 150 ) );
+
+		Bind( wxEVT_PAINT, [&]( wxPaintEvent& event )
+			{
+				wxAutoBufferedPaintDC dc( this );
+				std::unique_ptr<wxGraphicsContext> gc( wxGraphicsContext::Create( dc ) );
+
+				dc.Clear();
+				DrawBitmaps( gc );
 			} );
 	}
 };

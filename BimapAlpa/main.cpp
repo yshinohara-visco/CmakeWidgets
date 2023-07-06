@@ -145,15 +145,21 @@ public:
 	myFrame()
 		: wxFrame( NULL, -1, "Test", wxDefaultPosition, wxSize( 640, 480 ) )
 	{
-		myPanel* pnl = new myPanel( this );
-		DrawBitmapPanel* pnl2 = new DrawBitmapPanel( this );
-		DrawBitmapPanel2* pnl3 = new DrawBitmapPanel2( this );
+		//myPanel* pnl = new myPanel( this );
+		DrawBitmapPanel* pnl1 = new DrawBitmapPanel( this );
+		DrawBitmapPanel2* pnl2 = new DrawBitmapPanel2( this );
+		DrawBitmapPanel3* pnl3 = new DrawBitmapPanel3( this );
+		DrawBitmapPanel4* pnl4 = new DrawBitmapPanel4( this );
+		DrawBitmapPanel5* pnl5 = new DrawBitmapPanel5( this );
 
 		wxBoxSizer* sizer = new wxBoxSizer( wxHORIZONTAL );
 		{
-			sizer->Add( pnl, 1, wxEXPAND );
+			//sizer->Add( pnl, 1, wxEXPAND );
+			sizer->Add( pnl1, 1, wxEXPAND );
 			sizer->Add( pnl2, 1, wxEXPAND );
 			sizer->Add( pnl3, 1, wxEXPAND );
+			sizer->Add( pnl4, 1, wxEXPAND );
+			sizer->Add( pnl5, 1, wxEXPAND );
 		}
 		SetSizer( sizer );
 	}
