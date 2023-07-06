@@ -1,0 +1,7 @@
+﻿WindowsでwxBitmapとwxImageのAlpha値を設定していると不可解な動作がいくつも見られる
+
+・Test3()のようにwxImageで全てのAlpha値を0にすると何故か不透明な真っ黒画像になる
+・wxPaintDCにAlpha値を設定したwxBitmapを描画すると加算のように振る舞い、Buffered系のDCに描画すると減算のように振る舞う。
+
+Linuxでは書いた通りに描画される。
+クロスプラットフォーム開発においては意味不明で勘弁してほしい違い。
