@@ -20,10 +20,17 @@ namespace
 			it.MoveTo( data, 0, y );
 			for (size_t x = 0; x < size.x; x++)
 			{
+#ifdef __WINDOWS__
+				it.Red() = (r * alpha) / 255;
+				it.Green() = (g * alpha) / 255;
+				it.Blue() = (b * alpha) / 255;
+				it.Alpha() = alpha;
+#else //Linux
 				it.Red() = r;
 				it.Green() = g;
 				it.Blue() = b;
 				it.Alpha() = alpha;
+#endif
 				it++;
 			}
 		}
@@ -37,10 +44,13 @@ namespace
 	void DrawBitmaps( wxDC& dc )
 	{
 		dc.Clear();
-
-		dc.DrawBitmap( bmp1, wxPoint( 25, 0 ) );
-		dc.DrawBitmap( bmp2, wxPoint( 0, 50 ) );
-		dc.DrawBitmap( bmp3, wxPoint( 50, 50 ) );
+		// useMaskはtrueにしても変化が無かった
+		//dc.DrawBitmap( bmp1, wxPoint( 25, 0 ) );
+		//dc.DrawBitmap( bmp2, wxPoint( 0, 50 ) );
+		//dc.DrawBitmap( bmp3, wxPoint( 50, 50 ) );
+		dc.DrawBitmap( bmp1, wxPoint( 25, 0 ), true );
+		dc.DrawBitmap( bmp2, wxPoint( 0, 50 ), true );
+		dc.DrawBitmap( bmp3, wxPoint( 50, 50 ), true );
 	}
 
 	void DrawBitmaps( std::unique_ptr<wxGraphicsContext>& gc )
