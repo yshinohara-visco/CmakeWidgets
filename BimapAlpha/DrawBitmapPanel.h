@@ -9,6 +9,7 @@
 
 namespace
 {
+	// wxAlphaPixelDataを介してAlphaを設定する時、Windowsでは特殊な操作が必要
 	wxBitmap MakeBitmap( int r, int g, int b, int alpha )
 	{
 		wxSize size( 100, 100 );
@@ -37,9 +38,32 @@ namespace
 		return bmp;
 	}
 
-	auto bmp1 = MakeBitmap( 255, 50, 50, 20 );
-	auto bmp2 = MakeBitmap( 50, 255, 50, 20 );
-	auto bmp3 = MakeBitmap( 50, 50, 255, 20 );
+	// wxImageに設定する時は素直に値を入れて良いらしい
+	wxBitmap MakeBitmap2( int r, int g, int b, int alpha )
+	{
+		wxSize size( 100, 100 );
+		wxImage img( size );
+		img.InitAlpha();
+
+		img.SetRGB( wxRect( 0, 0, 100, 100 ), r, g, b );
+		
+		auto ptr = img.GetAlpha();
+		for (size_t i = 0; i < size.x*size.y; i++)
+		{
+			*ptr = (unsigned char)alpha;
+			ptr++;
+		}
+
+		return wxBitmap( img );
+	}
+
+
+	//auto bmp1 = MakeBitmap( 255, 50, 50, 20 );
+	//auto bmp2 = MakeBitmap( 50, 255, 50, 20 );
+	//auto bmp3 = MakeBitmap( 50, 50, 255, 20 );
+	auto bmp1 = MakeBitmap2( 255, 50, 50, 20 );
+	auto bmp2 = MakeBitmap2( 50, 255, 50, 20 );
+	auto bmp3 = MakeBitmap2( 50, 50, 255, 20 );
 
 	void DrawBitmaps( wxDC& dc )
 	{
