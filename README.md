@@ -1,0 +1,5 @@
+# CmakeWidgets
+
+wxWidgetsの動作確認用のCmakeプロジェクトを並べたリポジトリ。各ディレクトリがプロジェクトであって、トップを開いても機能しない。
+
+Windows,Linuxの比較をしやすいようにcmakeプロジェクトとしている。
